@@ -1,0 +1,7 @@
+Flask
+assemblyai
+yt-dlp
+pydub
+opencv-python
+python-dotenv
+gunicorn # For production deployment (optional for local development)

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Transcriber</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 to-purple-50 font-inter text-gray-800 overflow-hidden">
+    <div id="splashScreen" class="splash-screen active">
+        <div class="splash-content text-center p-8 md:p-12 rounded-2xl shadow-xl w-full max-w-2xl bg-white border border-gray-100">
+            <h1 class="text-4xl md:text-5xl font-poppins font-bold text-gray-900 mb-4 leading-tight animate-fade-in-down">
+                AI Media Transcriber
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 animate-fade-in-up">
+                Effortlessly transcribe audio and video content with intelligent AI-powered captions.
+                Upload your media or provide a URL, and get accurate, real-time transcriptions.
+            </p>
+            <button id="goToProjectBtn" class="button-primary splash-button animate-bounce-in-out">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+                Let's go!
+            </button>
+        </div>
+    </div>
+
+    <div id="appContainer" class="container hidden transition-opacity duration-500 opacity-0">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-poppins font-bold text-gray-900 mb-2 leading-tight">
+                AI Media Transcriber
+            </h1>
+            <p class="text-lg text-gray-600">
+                Effortlessly transcribe audio & video with smart captions.
+            </p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <section class="flex flex-col gap-6 p-4 border border-indigo-100 rounded-lg bg-indigo-50/20">
+                <h2 class="text-2xl font-poppins font-semibold text-indigo-700 mb-2">Input Your Media</h2>
+
+                <div class="input-group">
+                    <label for="fileInput" class="input-label">Upload Audio/Video</label>
+                    <input type="file" id="fileInput" class="input-field-file"
+                           accept="audio/*,video/*,.mp3,.wav,.ogg,.aac,.flac,.m4a,.opus,.mp4,.mkv,.avi,.mov,.webm,.flv,.wmv">
+                    <p class="text-sm text-gray-500 mt-1">Supported formats: MP4, MP3, WAV, etc.</p>
+                </div>
+
+                <div class="input-group hidden" id="urlInputGroup">
+                    <label for="urlInput" class="input-label">Enter Media URL</label>
+                    <input type="text" id="urlInput" placeholder="e.g., https://www.youtube.com/watch?v=dQw4" class="input-field-text">
+                    <p class="text-sm text-gray-500 mt-1">Direct link to video/audio files or YouTube/Vimeo links.</p>
+                </div>
+
+                <div class="flex items-center gap-2 mb-4">
+                    <input type="checkbox" id="urlCheckbox" class="checkbox-input">
+                    <label for="urlCheckbox" class="text-base font-medium text-gray-700 select-none">
+                        Use URL instead of uploading a file
+                    </label>
+                </div>
+
+                <button id="processBtn" class="button-primary flex items-center justify-center gap-2">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Process Media
+                </button>
+
+                <div id="loadingIndicator" class="loading-indicator hidden mt-4">
+                    <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-indigo-600 font-semibold">Processing... Please wait.</span>
+                </div>
+                <div id="statusMessage" class="status-message hidden mt-4"></div>
+            </section>
+
+            <section class="flex flex-col gap-6 p-4 border border-purple-100 rounded-lg bg-purple-50/20">
+                <h2 class="text-2xl font-poppins font-semibold text-purple-700 mb-2">Results</h2>
+
+                <div class="output-group">
+                    <label class="input-label">Media Player</label>
+                    <video id="videoOutput" controls class="video-player"></video>
+                    <p id="videoMessage" class="text-sm text-gray-500 mt-1 hidden text-center">Video will appear here after processing. Not all URLs provide a direct video stream.</p>
+                </div>
+
+                <div class="output-group">
+                    <label for="transcriptOutput" class="input-label">Transcription</label>
+                    <textarea id="transcriptOutput" class="transcript-box" readonly placeholder="Transcription will appear here..."></textarea>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center text-gray-500 text-sm mt-10">
+            <p>© 2025 AI Media Transcriber. All rights reserved.</p>
+            <p>Powered by AssemblyAI and yt-dlp.</p>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
